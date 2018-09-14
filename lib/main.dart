@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert' show json;
-
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import "package:http/http.dart" as http;
+
+import 'photos/library/services/photo_library_api.dart';
+import 'photos/library/models/media_item_list.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: <String>[
@@ -31,20 +31,34 @@ class SignInDemo extends StatefulWidget {
 
 class SignInDemoState extends State<SignInDemo> {
   GoogleSignInAccount _currentUser;
+  MediaItemList _photos;
 
   @override
   void initState() {
     super.initState();
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+
+      print(account);
+
       setState(() {
-        print(account);
         _currentUser = account;
       });
-      if (_currentUser != null) {
-        // TODO: Load photo
-      }
+
+      _getPhotos();
+
     });
     _googleSignIn.signInSilently();
+  }
+
+  Future<Null> _getPhotos () async {
+
+    if(_currentUser != null) {
+      MediaItemList photos = await getMediaItems(_currentUser);
+      setState(() {
+        _photos = photos;
+      });
+    }
+
   }
 
   Future<Null> _handleSignIn() async {
@@ -59,6 +73,15 @@ class SignInDemoState extends State<SignInDemo> {
     _googleSignIn.disconnect();
   }
 
+  Widget _buildPhotosList () {
+
+    if(_photos != null && _photos.mediaItems.length > 0) {
+      return Text('Vous avez des photos');
+    } else {
+      return Text('Vous ne possédez pas de photos');
+    }
+  }
+
   Widget _buildBody() {
     if (_currentUser != null) {
       return Column(
@@ -71,7 +94,7 @@ class SignInDemoState extends State<SignInDemo> {
             title: Text(_currentUser.displayName),
             subtitle: Text(_currentUser.email),
           ),
-          const Text("Signed in successfully."),
+          _buildPhotosList(),
           RaisedButton(
             child: const Text('SIGN OUT'),
             onPressed: _handleSignOut,

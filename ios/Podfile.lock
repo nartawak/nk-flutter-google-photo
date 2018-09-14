@@ -25,7 +25,7 @@ PODS:
     - GTMSessionFetcher/Core (= 1.1.15)
 
 DEPENDENCIES:
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `.symlinks/flutter/ios-profile`)
   - google_sign_in (from `.symlinks/plugins/google_sign_in/ios`)
 
 SPEC REPOS:
@@ -37,7 +37,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: ".symlinks/flutter/ios-profile"
   google_sign_in:
     :path: ".symlinks/plugins/google_sign_in/ios"
 
